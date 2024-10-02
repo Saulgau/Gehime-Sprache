@@ -44,57 +44,95 @@
         button:hover {
             background-color: #e6b800;
         }
+
+        #copyButton {
+            background-color: #00cc66;
+        }
+
+        #copyButton:hover {
+            background-color: #00b359;
+        }
     </style>
 </head>
 <body>
 
     <h1>Geheime Sprache Konverter</h1>
     
-    <textarea id="normalText" placeholder="Normalen Text hier eingeben..."></textarea>
-    <button onclick="convertToSecret()">Zu Geheime Sprache</button>
-    
-    <textarea id="secretText" placeholder="Geheime Sprache hier eingeben..."></textarea>
-    <button onclick="convertToNormal()">Zu Normalem Text</button>
+    <textarea id="textInput" placeholder="Text hier eingeben..."></textarea>
+    <button id="convertButton" onclick="convertText()">Konvertieren zu geheimer Sprache</button>
+    <button id="copyButton" onclick="copyToClipboard()">In Zwischenablage kopieren</button>
 
     <script>
-        // Das normale Alphabet
-        const normalAlphabet = "abcdefghijklmnopqrstuvwxyzäöüß";
+        // Normales Alphabet und Zahlen
+        const normalAlphabet = "abcdefghijklmnopqrstuvwxyzäöüß0123456789";
+        const secretAlphabet = "xwvutsrqponmlkjihgfedcbaäöüß9876543210";
 
-        // Das geheime, durcheinandergeworfene Alphabet
-        const secretAlphabet = "xwvutsrqponmlkjihgfedcbaäöüß";
+        // Funktion, um den Text zu konvertieren
+        function convertText() {
+            let inputText = document.getElementById("textInput").value.trim();
+            let firstChar = inputText[0] || ""; // Erstes Zeichen, falls vorhanden
+            let convertedText = "";
+            let isSecret = false;
 
-        // Funktion, um normalen Text in geheime Sprache zu konvertieren
-        function convertToSecret() {
-            let normalText = document.getElementById("normalText").value.toLowerCase();
+            // Prüfen, ob der Text geheime Sprache ist oder normaler Text
+            for (let char of inputText.toLowerCase()) {
+                if (secretAlphabet.includes(char)) {
+                    isSecret = true;
+                }
+            }
+
+            // Konvertierung je nachdem, ob es normaler Text oder geheime Sprache ist
+            if (isSecret) {
+                convertedText = convertToNormal(inputText);
+                document.getElementById("convertButton").innerText = "Konvertieren zu geheimer Sprache";
+            } else {
+                convertedText = convertToSecret(inputText);
+                document.getElementById("convertButton").innerText = "Konvertieren zu normaler Sprache";
+            }
+
+            // Text aktualisieren und Großschreibung sowie Punkt/Komma setzen
+            document.getElementById("textInput").value = formatText(convertedText);
+        }
+
+        // Konvertierung von normalem Text in geheime Sprache
+        function convertToSecret(text) {
             let secretText = "";
-
-            for (let char of normalText) {
+            for (let char of text.toLowerCase()) {
                 let index = normalAlphabet.indexOf(char);
                 if (index !== -1) {
                     secretText += secretAlphabet[index];
                 } else {
-                    secretText += char; // Falls es ein Zeichen ist, das nicht im Alphabet ist (z.B. Leerzeichen)
+                    secretText += char; // Sonderzeichen oder Leerzeichen beibehalten
                 }
             }
-
-            document.getElementById("secretText").value = secretText;
+            return secretText;
         }
 
-        // Funktion, um geheime Sprache in normalen Text zu konvertieren
-        function convertToNormal() {
-            let secretText = document.getElementById("secretText").value.toLowerCase();
+        // Konvertierung von geheimer Sprache in normalen Text
+        function convertToNormal(text) {
             let normalText = "";
-
-            for (let char of secretText) {
+            for (let char of text.toLowerCase()) {
                 let index = secretAlphabet.indexOf(char);
                 if (index !== -1) {
                     normalText += normalAlphabet[index];
                 } else {
-                    normalText += char; // Falls es ein Zeichen ist, das nicht im Alphabet ist (z.B. Leerzeichen)
+                    normalText += char; // Sonderzeichen oder Leerzeichen beibehalten
                 }
             }
+            return normalText;
+        }
 
-            document.getElementById("normalText").value = normalText;
+        // Formatieren des Textes (Großbuchstaben am Anfang, Punkt/Komma beachten)
+        function formatText(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1); // Erster Buchstabe groß
+        }
+
+        // Funktion zum Kopieren in die Zwischenablage
+        function copyToClipboard() {
+            let textToCopy = document.getElementById("textInput").value;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("Text in die Zwischenablage kopiert!");
+            });
         }
     </script>
 
