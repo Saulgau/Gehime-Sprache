@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geheime Sprache Konverter</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #ffcc00;
+        }
+
+        textarea {
+            width: 80%;
+            height: 100px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #ffcc00;
+            color: #121212;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #e6b800;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Geheime Sprache Konverter</h1>
+    
+    <textarea id="normalText" placeholder="Normalen Text hier eingeben..."></textarea>
+    <button onclick="convertToSecret()">Zu Geheime Sprache</button>
+    
+    <textarea id="secretText" placeholder="Geheime Sprache hier eingeben..."></textarea>
+    <button onclick="convertToNormal()">Zu Normalem Text</button>
+
+    <script>
+        // Das normale Alphabet
+        const normalAlphabet = "abcdefghijklmnopqrstuvwxyzäöüß";
+
+        // Das geheime, durcheinandergeworfene Alphabet
+        const secretAlphabet = "xwvutsrqponmlkjihgfedcbaäöüß";
+
+        // Funktion, um normalen Text in geheime Sprache zu konvertieren
+        function convertToSecret() {
+            let normalText = document.getElementById("normalText").value.toLowerCase();
+            let secretText = "";
+
+            for (let char of normalText) {
+                let index = normalAlphabet.indexOf(char);
+                if (index !== -1) {
+                    secretText += secretAlphabet[index];
+                } else {
+                    secretText += char; // Falls es ein Zeichen ist, das nicht im Alphabet ist (z.B. Leerzeichen)
+                }
+            }
+
+            document.getElementById("secretText").value = secretText;
+        }
+
+        // Funktion, um geheime Sprache in normalen Text zu konvertieren
+        function convertToNormal() {
+            let secretText = document.getElementById("secretText").value.toLowerCase();
+            let normalText = "";
+
+            for (let char of secretText) {
+                let index = secretAlphabet.indexOf(char);
+                if (index !== -1) {
+                    normalText += normalAlphabet[index];
+                } else {
+                    normalText += char; // Falls es ein Zeichen ist, das nicht im Alphabet ist (z.B. Leerzeichen)
+                }
+            }
+
+            document.getElementById("normalText").value = normalText;
+        }
+    </script>
+
+</body>
+</html>
